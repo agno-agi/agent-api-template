@@ -1,7 +1,6 @@
 from os import getenv
 
 from agno.aws.app.fastapi import FastApi
-from agno.aws.app.streamlit import Streamlit
 from agno.aws.resource.ec2 import InboundRule, SecurityGroup
 from agno.aws.resource.ecs import EcsCluster
 from agno.aws.resource.rds import DbInstance, DbSubnetGroup
@@ -46,8 +45,8 @@ prd_bucket = S3Bucket(
 prd_secret = SecretsManager(
     name=f"{ws_settings.prd_key}-secrets",
     group="app",
-    # Create secret from workspace/secrets/prd_app_secrets.yml
-    secret_files=[ws_settings.ws_root.joinpath("workspace/secrets/prd_app_secrets.yml")],
+    # Create secret from workspace/secrets/prd_api_secrets.yml
+    secret_files=[ws_settings.ws_root.joinpath("workspace/secrets/prd_api_secrets.yml")],
     skip_delete=skip_delete,
     save_output=save_output,
 )
@@ -91,11 +90,6 @@ prd_sg = SecurityGroup(
         InboundRule(
             description="Allow traffic from LB to the FastAPI server",
             port=8000,
-            security_group_id=AwsReference(prd_lb_sg.get_security_group_id),
-        ),
-        InboundRule(
-            description="Allow traffic from LB to the Streamlit app",
-            port=8501,
             security_group_id=AwsReference(prd_lb_sg.get_security_group_id),
         ),
     ],
@@ -185,34 +179,6 @@ container_env = {
     "MIGRATE_DB": prd_db.enabled,
 }
 
-# -*- Streamlit running on ECS
-prd_streamlit = Streamlit(
-    name=f"{ws_settings.prd_key}-ui",
-    group="app",
-    image=prd_image,
-    command="streamlit run ui/Home.py",
-    port_number=8501,
-    ecs_task_cpu="2048",
-    ecs_task_memory="4096",
-    ecs_service_count=1,
-    ecs_cluster=prd_ecs_cluster,
-    aws_secrets=[prd_secret],
-    subnets=ws_settings.aws_subnet_ids,
-    security_groups=[prd_sg],
-    # To enable HTTPS, create an ACM certificate and add the ARN below:
-    # load_balancer_enable_https=True,
-    # load_balancer_certificate_arn="LOAD_BALANCER_CERTIFICATE_ARN",
-    load_balancer_security_groups=[prd_lb_sg],
-    create_load_balancer=True,
-    env_vars=container_env,
-    skip_delete=skip_delete,
-    save_output=save_output,
-    # Do not wait for the service to stabilize
-    wait_for_create=False,
-    # Do not wait for the service to be deleted
-    wait_for_delete=False,
-)
-
 # -*- FastApi running on ECS
 prd_fastapi = FastApi(
     name=f"{ws_settings.prd_key}-api",
@@ -252,7 +218,7 @@ prd_docker_resources = DockerResources(
 # -*- Production AwsResources
 prd_aws_config = AwsResources(
     env=ws_settings.prd_env,
-    apps=[prd_streamlit, prd_fastapi],
+    apps=[prd_fastapi],
     resources=(
         prd_lb_sg,
         prd_sg,

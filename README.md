@@ -1,4 +1,4 @@
-## App Workspace Template
+## Api Workspace Template
 
 This repo contains the code for running an agent-app and supports 2 environments:
 
@@ -9,7 +9,7 @@ This repo contains the code for running an agent-app and supports 2 environments
 
 1. [Install uv](https://docs.astral.sh/uv/#getting-started): `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
-> from the `api-ws-template` dir:
+> from the `agent-api-template` dir:
 
 2. Install workspace and activate the virtual env:
 
@@ -61,4 +61,4 @@ ag ws down dev
 
 ## Next Steps:
 
-- Run the App Workspace Template on AWS - Docs coming soon
+- Run the Api Workspace Template on AWS - Docs coming soon

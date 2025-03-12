@@ -3,6 +3,7 @@ from os import getenv
 from agno.playground import Playground
 
 from agents.sage import get_sage
+from agents.scholar import get_scholar
 from workspace.dev_resources import dev_fastapi
 
 ######################################################
@@ -10,9 +11,9 @@ from workspace.dev_resources import dev_fastapi
 ######################################################
 
 sage_agent = get_sage(debug_mode=True)
-
+scholar_agent = get_scholar(debug_mode=True)
 # Create a playground instance
-playground = Playground(agents=[sage_agent])
+playground = Playground(agents=[sage_agent, scholar_agent])
 
 # Register the endpoint where playground routes are served with agno.com
 if getenv("RUNTIME_ENV") == "dev":

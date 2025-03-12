@@ -8,7 +8,7 @@ from agno.workspace.settings import WorkspaceSettings
 #
 ws_settings = WorkspaceSettings(
     # Workspace name
-    ws_name="agent-app",
+    ws_name="agent-api",
     # Path to the workspace root
     ws_root=Path(__file__).parent.parent.resolve(),
     # -*- Workspace Environments
@@ -23,7 +23,7 @@ ws_settings = WorkspaceSettings(
     # Repository for images
     # image_repo="agnohq",
     # 'Name:tag' for the image
-    image_name="agent-app",
+    image_name="agent-api",
     # Build images locally
     build_images=True,
     # Skip cache when building images

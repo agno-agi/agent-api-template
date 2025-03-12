@@ -2,7 +2,6 @@ from os import getenv
 
 from agno.docker.app.fastapi import FastApi
 from agno.docker.app.postgres import PgVectorDb
-from agno.docker.app.streamlit import Streamlit
 from agno.docker.resource.image import DockerImage
 from agno.docker.resources import DockerResources
 
@@ -53,22 +52,6 @@ container_env = {
     "MIGRATE_DB": dev_db.enabled,
 }
 
-# -*- Streamlit running on port 8501:8501
-dev_streamlit = Streamlit(
-    name=f"{ws_settings.ws_name}-ui",
-    image=dev_image,
-    command="streamlit run ui/Home.py",
-    port_number=8501,
-    debug_mode=True,
-    mount_workspace=True,
-    streamlit_server_headless=True,
-    env_vars=container_env,
-    use_cache=True,
-    # Read secrets from secrets/dev_app_secrets.yml
-    secrets_file=ws_settings.ws_root.joinpath("workspace/secrets/dev_app_secrets.yml"),
-    depends_on=[dev_db],
-)
-
 # -*- FastApi running on port 8000:8000
 dev_fastapi = FastApi(
     name=f"{ws_settings.ws_name}-api",
@@ -80,7 +63,7 @@ dev_fastapi = FastApi(
     env_vars=container_env,
     use_cache=True,
     # Read secrets from secrets/dev_app_secrets.yml
-    secrets_file=ws_settings.ws_root.joinpath("workspace/secrets/dev_app_secrets.yml"),
+    secrets_file=ws_settings.ws_root.joinpath("workspace/secrets/dev_api_secrets.yml"),
     depends_on=[dev_db],
 )
 
@@ -88,5 +71,5 @@ dev_fastapi = FastApi(
 dev_docker_resources = DockerResources(
     env=ws_settings.dev_env,
     network=ws_settings.ws_name,
-    apps=[dev_db, dev_streamlit, dev_fastapi],
+    apps=[dev_db, dev_fastapi],
 )
