@@ -1,64 +1,69 @@
-## Api Workspace Template
+## Sample Agentic Application
 
-This repo contains the code for running an agent-app and supports 2 environments:
+This repo contains the code for a running an agentic application with:
 
-1. **dev**: A development environment running locally on docker
-2. **prd**: A production environment running on AWS ECS
+1. A FastAPI server
+2. A Postgres database with the PgVector extension.
 
-## Setup Workspace
+You can run the agentic application in 2 environments:
+
+1. A development environment running locally on docker
+2. A production environment running on AWS ECS
+
+## Setup
 
 1. [Install uv](https://docs.astral.sh/uv/#getting-started): `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
-> from the `agent-api-template` dir:
-
-2. Install workspace and activate the virtual env:
+2. Create a virtual environment and install dependencies:
 
 ```sh
-./scripts/install.sh
+./scripts/dev_setup.sh
+```
+
+3. Activate virtual environment
+
+```
 source .venv/bin/activate
 ```
 
-3. Copy `workspace/example_secrets` to `workspace/secrets`:
-
-```sh
-cp -r workspace/example_secrets workspace/secrets
-```
-
-4. Optional: Create `.env` file:
-
-```sh
-cp example.env .env
-```
-
-## Run Api Workspace Template locally
+## Run application locally using docker
 
 1. Install [docker desktop](https://www.docker.com/products/docker-desktop)
 
-2. Set OpenAI Key
+2. Export API keys
 
-Set the `OPENAI_API_KEY` environment variable using
-
-```sh
-export OPENAI_API_KEY=sk-***
-```
-
-**OR** set in the `.env` file
-
-3. Start the workspace using:
+Required: Set the `OPENAI_API_KEY` environment variable using
 
 ```sh
-ag ws up dev
+export OPENAI_API_KEY=***
 ```
 
-Open [localhost:8000/docs](http://localhost:8000/docs) to view the FastAPI docs.
-Open [localhost:8501](http://localhost:8501) to view the Streamlit App.
+> you may use any model provider, just need to update the /agents
+
+Optional: Set the `EXA_API_KEY` if you'd like to use Exa search
+
+```sh
+export EXA_API_KEY=***
+```
+
+3. Start the workspace:
+
+```sh
+ag ws up
+```
+
+- This will run 3 containers:
+  - FastAPI on [localhost:8000](http://localhost:8000/docs)
+  - Postgres on [localhost:5432](http://localhost:5432)
+- Open [localhost:8501](http://localhost:8501) to view the Streamlit App.
+- Open [localhost:8000/docs](http://localhost:8000/docs) to view the FastAPI docs.
 
 4. Stop the workspace using:
 
 ```sh
-ag ws down dev
+ag ws down
 ```
 
-## Next Steps:
+## Learn more:
 
-- Run the Api Workspace Template on AWS - Docs coming soon
+- Learn more about this template and how to customize it.
